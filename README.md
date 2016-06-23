@@ -7,6 +7,15 @@
 
 也可以通过在`glide.yaml`文件的`import`节点内添加子节点来指定替换规则（待测）：
 ```
+package: github.com/webx-top/webx
+import:
+- package: golang.org/x/net
+  replaces:
+  - golang.org/x/ => github.com/golang/
+- package: golang.org/x/sys
+  replaces:
+  - golang.org/x/ => github.com/golang/
+- package: golang.org/x/text
   replaces:
   - golang.org/x/ => github.com/golang/
 ```
