@@ -463,15 +463,9 @@ func (d *Dependency) GetRepo(dest string) (vcs.Repo, error) {
 	}
 
 	//[SWH|+]
-	urlInfo := strings.SplitN(remote, `://`, 2)
 	orginalRemote := remote
-	urlLength := len(urlInfo)
 	if len(d.Replaces) == 0 {
-		if urlLength == 2 {
-			if strings.HasPrefix(urlInfo[1], `golang.org/x/`) {
-				d.Replaces = append(d.Replaces, `golang.org/x/ => github.com/golang/`)
-			}
-		}
+		d.Replaces = append(d.Replaces, `golang.org/x/ => github.com/golang/`)
 	}
 	for _, v := range d.Replaces {
 		replaces := strings.SplitN(v, `=>`, 2)
