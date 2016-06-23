@@ -5,7 +5,7 @@
 
 即：将`golang.org/x/`替换为`github.com/golang/`（解决golang.org在国内无法访问的问题）
 
-也可以通过在`glide.yaml`文件的`import`节点内添加子节点来指定替换规则（待测）：
+也可以通过在`glide.yaml`文件的`import`节点内添加子节点来指定替换规则：
 ```
 package: github.com/webx-top/webx
 import:
