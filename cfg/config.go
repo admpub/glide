@@ -376,6 +376,7 @@ type Dependency struct {
 	Arch             []string `yaml:"arch,omitempty"`
 	Os               []string `yaml:"os,omitempty"`
 	UpdateAsVendored bool     `yaml:"-"`
+	Replaces         []string `yaml:"replaces,omitempty"` //[SWH|+]
 }
 
 // A transitive representation of a dependency for importing and exploting to yaml.
@@ -388,6 +389,7 @@ type dep struct {
 	Subpackages []string `yaml:"subpackages,omitempty"`
 	Arch        []string `yaml:"arch,omitempty"`
 	Os          []string `yaml:"os,omitempty"`
+	Replaces    []string `yaml:"replaces,omitempty"` //[SWH|+]
 }
 
 // UnmarshalYAML is a hook for gopkg.in/yaml.v2 in the unmarshaling process
@@ -404,6 +406,7 @@ func (d *Dependency) UnmarshalYAML(unmarshal func(interface{}) error) error {
 	d.Subpackages = newDep.Subpackages
 	d.Arch = newDep.Arch
 	d.Os = newDep.Os
+	d.Replaces = newDep.Replaces //[SWH|+]
 
 	if d.Reference == "" && newDep.Ref != "" {
 		d.Reference = newDep.Ref
@@ -457,6 +460,29 @@ func (d *Dependency) GetRepo(dest string) (vcs.Repo, error) {
 		remote = d.Repository
 	} else {
 		remote = "https://" + d.Name
+	}
+
+	//[SWH|+]
+	urlInfo := strings.SplitN(remote, `://`, 2)
+	orginalRemote := remote
+	urlLength := len(urlInfo)
+	if len(d.Replaces) == 0 {
+		if urlLength == 2 {
+			if strings.HasPrefix(urlInfo[1], `golang.org/x/`) {
+				d.Replaces = append(d.Replaces, `golang.org/x/ => github.com/golang/`)
+			}
+		}
+	}
+	for _, v := range d.Replaces {
+		replaces := strings.SplitN(v, `=>`, 2)
+		switch len(replaces) {
+		case 2:
+			remote = strings.Replace(orginalRemote, strings.TrimSpace(replaces[0]), strings.TrimSpace(replaces[1]), -1)
+			fmt.Println(`Rewrite repo `, orginalRemote, `to`, remote)
+		case 1:
+			remote = strings.TrimSpace(v)
+			fmt.Println(`Rewrite repo `, orginalRemote, `to`, remote)
+		}
 	}
 
 	// If the VCS type has a value we try that first.

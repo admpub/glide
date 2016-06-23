@@ -1,5 +1,25 @@
 # Glide: Vendor Package Management for Golang
 
+### 本fork版改进记录
+支持指定repo网址替换规则，在不指定的情况下，默认替换规格为`golang.org/x/ => github.com/golang/`，
+
+即：将`golang.org/x/`替换为`github.com/golang/`（解决golang.org在国内无法访问的问题）
+
+也可以通过在`glide.yaml`文件的`import`节点内添加子节点来指定替换规则（待测）：
+```
+  replaces:
+  - golang.org/x/ => github.com/golang/
+```
+
+### 本fork版安装方式
+```
+go get github.com/admpub/glide
+cd %GOPATH%\src\github.com\admpub\glide\
+copy.bat
+```
+以上命令完成了以下操作：先`go get`本fork版，然后将本版代码拷贝到`github.com/Masterminds/glide`,然后再`go install`此包。
+
+
 ![glide logo](https://glide.sh/assets/logo-small.png)
 
 Are you used to tools such as Cargo, npm, Composer, Nuget, Pip, Maven, Bundler,
