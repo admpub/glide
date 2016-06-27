@@ -477,6 +477,12 @@ func (d *Dependency) GetRepo(dest string) (vcs.Repo, error) {
 
 	//[SWH|+]
 	orginalRemote := remote
+	if len(d.Replaces) == 0 {
+		switch {
+		case strings.Contains(remote, `golang.org/x/`):
+			d.Replaces = append(d.Replaces, `golang.org/x/ => github.com/golang/`)
+		}
+	}
 	for _, v := range d.Replaces {
 		replaces := strings.SplitN(v, `=>`, 2)
 		switch len(replaces) {
