@@ -481,7 +481,7 @@ func (d *Dependency) GetRepo(dest string) (vcs.Repo, error) {
 		replaces := strings.SplitN(v, `=>`, 2)
 		switch len(replaces) {
 		case 2:
-			remote = strings.Replace(orginalRemote, strings.TrimSpace(replaces[0]), strings.TrimSpace(replaces[1]), -1)
+			remote = strings.Replace(remote, strings.TrimSpace(replaces[0]), strings.TrimSpace(replaces[1]), -1)
 			fmt.Println(`Rewrite repo `, orginalRemote, `to`, remote)
 		case 1:
 			remote = strings.TrimSpace(v)
